@@ -52,6 +52,9 @@ setup(
         'django-subdomain-instances >= 1.0',
         'easy-thumbnails >= 2.1',
         'unicode-slugify == 0.1.1',
+        'requests',
+        'lxml',
+        dateutil,
     ] + ssl,
     extras_require={
         'test': [
@@ -59,8 +62,6 @@ setup(
             'mock',
             'django-nose == 1.4.2',
             'Mutagen',
-            'lxml',
-            dateutil,
             'requests_cache',
         ],
         'develop': [
