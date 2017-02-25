@@ -68,6 +68,9 @@
 
 <div class="form-actions">
     <input type="submit" id="section_submit" class="button" value="{{ submit }}">
+    {% if form.instance.id %}
+      <a href="{{ section.get_delete_url }}" class="button secondary">{% trans "Delete section" %}</a>
+    {% endif %}
 </div>
 
 </form>
