@@ -10,6 +10,8 @@ from six.moves.urllib.error import HTTPError
 from django.utils.translation import ugettext_lazy as _, ugettext
 from django.db import models
 from django.db.models import Q
+from django.db.models.signals import pre_delete
+from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.html import strip_tags
 from django.template.defaultfilters import timesince
@@ -591,7 +593,7 @@ class Speech(InstanceMixin, AudioMP3Mixin, AuditedModel):
     section = models.ForeignKey(
         Section, verbose_name=_('Section'), blank=True, null=True,
         on_delete=models.SET_NULL,
-        help_text=('The section that this speech is contained in'),)
+        help_text=('The section that this speech is contained in'))
     num = models.TextField(
         _('number'), blank=True,
         help_text=_('The number of the speech, if relevant'))
@@ -888,3 +890,10 @@ class Recording(InstanceMixin, AudioMP3Mixin, AuditedModel):
                     timestamp.save()
 
         return created_speeches
+
+@receiver(pre_delete, sender=Section)
+def delete_section_speeches(sender, instance, **kwargs):
+    for section in instance.children.all():
+        section.delete()
+    for speech in Speech.objects.filter(section=instance):
+        speech.delete()
