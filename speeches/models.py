@@ -893,7 +893,5 @@ class Recording(InstanceMixin, AudioMP3Mixin, AuditedModel):
 
 @receiver(pre_delete, sender=Section)
 def delete_section_speeches(sender, instance, **kwargs):
-    for section in instance.children.all():
-        section.delete()
-    for speech in Speech.objects.filter(section=instance):
-        speech.delete()
+    instance.children.all().delete()
+    Speech.objects.filter(section=instance).delete()
